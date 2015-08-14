@@ -27,8 +27,12 @@ public static function call($name, $data) {
 
       $result = json_decode(file_get_contents($url), true);
       
-      if (!empty($result['result'])) {
-        return $result['result'];
+      if (!empty($result['result']) && $result['result'] == 'success' && !empty($result['data'])) {
+        return $result['data'];
+      } elseif(!empty($result['errors'])) {
+        throw new Exception('Faas return error: ' . join(',', $result['errors']));
+      } else {
+        throw new Exception('Faas return unknown error');
       }
 
     } else {
